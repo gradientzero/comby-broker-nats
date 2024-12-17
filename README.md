@@ -32,7 +32,7 @@ import (
 )
 
 // create NATS broker
-natsBroker := broker.NewBroker("nats://127.0.0.1:4222")
+natsBroker := broker.NewBrokerNATS("nats://127.0.0.1:4222")
 
 // create Facade
 fc, _ := comby.NewFacade(
