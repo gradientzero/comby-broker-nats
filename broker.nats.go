@@ -41,7 +41,7 @@ type broker struct {
 // Make sure it implements interface
 var _ comby.Broker = (*broker)(nil)
 
-func NewBrokerNATS(Uri string) comby.Broker {
+func NewBrokerNats(Uri string) comby.Broker {
 	b := &broker{
 		options:    comby.BrokerOptions{},
 		Uri:        Uri,

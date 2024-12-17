@@ -4,8 +4,9 @@ import (
 	"context"
 	"sync"
 	"testing"
+	"time"
 
-	"github.com/gradientzero/comby-nats-broker"
+	broker "github.com/gradientzero/comby-broker-nats"
 	"github.com/gradientzero/comby/v2"
 )
 
@@ -16,8 +17,8 @@ func TestBrokerNats1(t *testing.T) {
 	// setup and init broker
 	commandBus := comby.NewCommandBusMemory()
 	eventBus := comby.NewEventBusMemory()
-	natsBroker := broker.NewBrokerNATS("nats://127.0.0.1:4222")
-	if err = natsBroker.Init(ctx,
+	natsBroker1 := broker.NewBrokerNats("nats://127.0.0.1:4222")
+	if err = natsBroker1.Init(ctx,
 		comby.BrokerOptionWithAppName("my-app"),
 		comby.BrokerOptionWithCommandBus(commandBus),
 		comby.BrokerOptionWithEventBus(eventBus),
@@ -25,19 +26,31 @@ func TestBrokerNats1(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := natsBroker.PublishToCommandBus(ctx, []byte("my-command")); err != nil {
+	// Pretend I'm another instance
+	natsBroker2 := broker.NewBrokerNats("nats://127.0.0.1:4222")
+	if err = natsBroker2.Init(ctx,
+		comby.BrokerOptionWithAppName("my-app"),
+		comby.BrokerOptionWithCommandBus(commandBus),
+		comby.BrokerOptionWithEventBus(eventBus),
+	); err != nil {
 		t.Fatal(err)
 	}
 
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
-		for _cmd := range natsBroker.SubscribeToCommandBus() {
+		for _cmd := range commandBus.SubscribeToCommandBus() {
 			if string(_cmd) == "my-command" {
 				t.Log("received command")
 				wg.Done()
 			}
 		}
 	}()
+
+	time.Sleep(100 * time.Millisecond)
+	if err := natsBroker1.PublishToCommandBus(ctx, []byte("my-command")); err != nil {
+		t.Fatal(err)
+	}
+
 	wg.Wait()
 }

@@ -1,4 +1,4 @@
-# comby-nats-broker
+# comby-broker-nats
 
 Implementation of the Broker interface defined in [comby](https://github.com/gradientzero/comby) with NATS. **comby** is a powerful application framework designed with Event Sourcing and Command Query Responsibility Segregation (CQRS) principles, written in Go.
 
@@ -17,22 +17,22 @@ docker run -d --name nats-main -p 4222:4222 -p 6222:6222 -p 8222:8222 nats
 
 ## Installation
 
-*comby-nats-broker* supports the latest version of comby (v2), requires Go version 1.22+ and is based on NATS client [nats.go](https://github.com/nats-io/nats.go).
+*comby-broker-nats* supports the latest version of comby (v2), requires Go version 1.22+ and is based on NATS client [nats.go](https://github.com/nats-io/nats.go).
 
 ```shell
-go get github.com/gradientzero/comby-nats-broker
+go get github.com/gradientzero/comby-broker-nats
 ```
 
 ## Quickstart
 
 ```go
 import (
-	"github.com/gradientzero/comby-nats-broker"
+	"github.com/gradientzero/comby-broker-nats"
 	"github.com/gradientzero/comby/v2"
 )
 
 // create NATS broker
-natsBroker := broker.NewBrokerNATS("nats://127.0.0.1:4222")
+natsBroker := broker.NewBrokerNats("nats://127.0.0.1:4222")
 
 // create Facade
 fc, _ := comby.NewFacade(
