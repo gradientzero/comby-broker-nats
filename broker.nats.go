@@ -8,11 +8,10 @@ import (
 	"sync"
 
 	"github.com/gradientzero/comby/v2"
-	"github.com/gradientzero/comby/v2/log"
 	"github.com/nats-io/nats.go"
 )
 
-var logger = log.Handler.With("pkg", "comby/broker", "broker", "nats")
+var logger = comby.Logger.With("pkg", "comby/broker", "broker", "nats")
 
 const KEY_BROKER_UUID string = "broker-uuid"
 
